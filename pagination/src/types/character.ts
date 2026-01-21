@@ -4,4 +4,5 @@ export interface Character {
   status: "Alive" | "unknown" | "Dead";
   type: string;
   url: string;
+  image: string
 }

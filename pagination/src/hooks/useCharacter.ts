@@ -1,11 +1,12 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import type { CharacterResponse } from "../types/chacter-response";
 import { fetchCharacter } from "../services/fetchCharacters";
 
 export default function useCharacter() {
 
     const [page, setPage] = useState(1);
+    const queryClient = useQueryClient()
 
     const { data, isLoading, error, isError } = useQuery<CharacterResponse>({
         queryKey: ["characters", page],
@@ -16,20 +17,38 @@ export default function useCharacter() {
 
     const totalPages = data?.info.pages ?? 0
 
-    const nextPage = () =>{
+    useEffect(() => {
 
-        if(!totalPages) return
-        if(page >= totalPages) return
+        if (page >= totalPages) return
+
+        const id = requestIdleCallback(() => {
+            queryClient.prefetchQuery({
+                queryKey: ["characters", page + 1],
+                queryFn: () => fetchCharacter(page + 1),
+                staleTime: 1000 * 60 * 5,
+            });
+
+            return () => cancelIdleCallback(id)
+
+        }
+        )
+    }, [page, totalPages, queryClient])
+
+
+    const nextPage = () => {
+
+        if (!totalPages) return
+        if (page >= totalPages) return
         setPage((prev) => prev + 1)
     }
 
-    const prevPage = () =>{
-        if(!totalPages) return
-        if(page <= 1) return
+    const prevPage = () => {
+        if (!totalPages) return
+        if (page <= 1) return
         setPage((prev) => prev - 1)
     }
-    
-    return{
+
+    return {
         character: data?.results ?? [],
         page,
         totalPages,
