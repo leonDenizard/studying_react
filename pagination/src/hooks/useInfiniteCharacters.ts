@@ -13,10 +13,17 @@ export default function useInfiniteCharacters() {
         getNextPageParam: (lastPage) =>
             getURL(lastPage.info.next),
         staleTime: 1000 * 60 * 5,
+        retry: (failureCount, error) => {
+            if (error instanceof Error && error.message.includes("Muitas requisições")) {
+                return failureCount < 2;
+            }
+            return false;
+        },
+        retryDelay: 2000,
     });
 
     const characters = query.data?.pages.flatMap(page => page.results) ?? [];
-    console.log(characters)
+
     return {
         characters,
         fetchNextPage: query.fetchNextPage,
@@ -24,5 +31,6 @@ export default function useInfiniteCharacters() {
         isLoading: query.isLoading,
         isFetchingNextPage: query.isFetchingNextPage,
         error: query.error,
+        query
     }
 }

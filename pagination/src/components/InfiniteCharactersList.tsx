@@ -18,22 +18,24 @@ export function InfiniteCharacterList() {
 
     const el = loadMoreRef.current;
 
-    if(!el) return
+    if (!el) return;
 
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        fetchNextPage();
-      }
-    },{
-      root: el.parentElement,
-      rootMargin: "100px",
-    });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      {
+        root: el.parentElement,
+        rootMargin: "300px",
+      },
+    );
 
     if (el) {
       observer.observe(el);
     }
-    console.log(loadMoreRef)
-
+    
     return () => {
       if (el) observer.unobserve(el);
     };
@@ -52,9 +54,9 @@ export function InfiniteCharacterList() {
     <div className="relative bg-zinc-900 p-2.5">
       <ul className="grid md:grid-cols-2 gap-1 justify-center items-center mb-8 h-[75vh] overflow-y-scroll">
         {characters.map((c) => (
-          <li key={c.id} className="flex gap-3 items-center">
+          <li key={c.id} className="flex gap-3 items-center group">
             <img
-              className="h-12 w-12 rounded-md object-cover bg-zinc-950 opacity-0 transition-opacity-300"
+              className="h-12 w-12 rounded-md object-cover bg-zinc-950 opacity-0 transition-opacity-300 group-hover:scale-200"
               src={c.image}
               alt={`Image ${c.name}`}
               loading="lazy"
@@ -77,6 +79,11 @@ export function InfiniteCharacterList() {
             {isFetchingNextPage ? "Carregando mais..." : "Carregar mais"}
           </button>
         </div>
+      )}
+      {error && (
+        <p className="text-yellow-400 text-sm">
+          Muitas requisições. Aguarde alguns segundos…
+        </p>
       )}
     </div>
   );
