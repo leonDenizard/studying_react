@@ -9,7 +9,7 @@ export default function CharacterList() {
 
   return (
     <div className="relative bg-zinc-900 p-2.5">
-      <ul className="grid md:grid-cols-2 gap-1 justify-center items-center mb-8 h-[80vh]">
+      <ul className="grid md:grid-cols-2 gap-1 justify-center items-center mb-8 h-[75vh] overflow-y-scroll">
         {character.map((c) => (
           <li key={c.id} className="flex gap-3 items-center">
             <img 

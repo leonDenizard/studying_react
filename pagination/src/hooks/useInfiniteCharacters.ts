@@ -1,4 +1,3 @@
-import type { CharacterResponse } from "../types/chacter-response";
 import { fetchCharacter } from "../services/fetchCharacters";
 import { getURL } from "../utils/getURL";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -17,7 +16,7 @@ export default function useInfiniteCharacters() {
     });
 
     const characters = query.data?.pages.flatMap(page => page.results) ?? [];
-
+    console.log(characters)
     return {
         characters,
         fetchNextPage: query.fetchNextPage,

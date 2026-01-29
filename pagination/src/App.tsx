@@ -5,34 +5,22 @@ import { InfiniteCharacterList } from "./components/InfiniteCharactersList";
 type ViewMode = "pagination" | "infinite";
 
 function App() {
-  const [view, setView] = useState<ViewMode>("pagination");
-
+  const [ViewMode, setViewMode] = useState<ViewMode>("pagination");
   return (
     <>
-      <nav>
-        <ul className="flex justify-between p-2.5 underline tracking-wider">
-          <li>
-            <button
-              onClick={() => setView("pagination")}
-              className={view === "pagination" ? "font-bold" : ""}
-            >
-              Pagination
-            </button>
-          </li>
+      <ul className="flex justify-center items-center gap-8 h-12">
+        <li>
+          <button onClick={() => setViewMode("pagination")}
+            className={`${ViewMode === "pagination" ? "font-bold underline": ""} cursor-pointer`}>Pagination</button>
+        </li>
+        <li>
+          <button onClick={() => setViewMode("infinite")}
+            className={`${ViewMode === "infinite" ? "font-bold underline" : ""} cursor-pointer`}>Infinite Pagination</button>
+        </li>
+      </ul>
 
-          <li>
-            <button
-              onClick={() => setView("infinite")}
-              className={view === "infinite" ? "font-bold" : ""}
-            >
-              Infinite Pagination
-            </button>
-          </li>
-        </ul>
-      </nav>
-
-      {view === "pagination" && <CharacterList />}
-      {view === "infinite" && <InfiniteCharacterList />}
+      {ViewMode === "pagination" && <CharacterList/>}
+      {ViewMode === "infinite" && <InfiniteCharacterList/>}
     </>
   );
 }
